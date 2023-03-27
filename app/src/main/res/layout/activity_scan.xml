@@ -21,9 +21,9 @@
     <TextView
         android:id="@+id/titleScan"
         android:layout_width="wrap_content"
-        android:layout_height="23dp"
+        android:layout_height="24dp"
         android:layout_marginTop="30dp"
-        android:text="Lancer le scan"
+        android:text="Lancer le scan (10s)"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,8 +31,8 @@
 
     <ImageView
         android:id="@+id/iconStatusScan"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:layout_marginStart="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/titleScan"
         app:layout_constraintStart_toEndOf="@+id/titleScan"
