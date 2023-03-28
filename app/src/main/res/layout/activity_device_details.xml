@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/compteurValue"
+        android:id="@+id/counterValue"
         android:layout_width="48dp"
         android:layout_height="38dp"
         android:text="0"
@@ -132,7 +132,7 @@
         app:layout_constraintTop_toTopOf="@+id/descriptionSub" />
 
     <TextView
-        android:id="@+id/compteurDescription"
+        android:id="@+id/counterDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -173,8 +173,8 @@
         android:backgroundTint="#1E7DBE"
         android:indeterminate="true"
         android:progressBackgroundTint="#1E7DBE"
-        app:layout_constraintBottom_toBottomOf="@+id/compteurDescription"
-        app:layout_constraintStart_toEndOf="@+id/compteurDescription"
-        app:layout_constraintTop_toTopOf="@+id/compteurDescription" />
+        app:layout_constraintBottom_toBottomOf="@+id/counterDescription"
+        app:layout_constraintStart_toEndOf="@+id/counterDescription"
+        app:layout_constraintTop_toTopOf="@+id/counterDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -52,19 +52,10 @@ class ScanActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "ScanActivity"
         private const val REQUEST_ENABLE_BT = 1
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-        private const val SCAN_PERIOD: Long = 10000 //10 seconds
+        lateinit var bluetoothGatt: BluetoothGatt
     }
 
-    // Device scan callback.
-    private val mLeScanCallback = object : ScanCallback() {
-        override fun onScanResult(callbackType: Int, result: ScanResult) {
-            super.onScanResult(callbackType, result)
-            addDevice(result.device)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,6 +138,7 @@ class ScanActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun startBluetoothScan(bluetoothAdapter: BluetoothAdapter) {
+        //Change layout (progress bar, button etc)
         binding.iconStatusScan.setImageResource(R.drawable.baseline_pause_circle_24)
         binding.progressBarScan.isIndeterminate = true
         binding.titleScan.text = "Scan en cours..."
@@ -156,7 +148,7 @@ class ScanActivity : AppCompatActivity() {
             if (scanner != null) {
                 stopBluetoothScan(scanner)
             }
-        }, 10000)
+        }, 12000) //12 seconds
     }
 
     @SuppressLint("MissingPermission")
@@ -166,6 +158,7 @@ class ScanActivity : AppCompatActivity() {
                 super.onScanResult(callbackType, result)
                 val device = result.device
                 if (!device.name.isNullOrEmpty()) {
+                    //remove all devices without names that are polluting
                     (binding.recyclerScan.adapter as DeviceAdapter).addDevice(device)
                 }
             }
@@ -175,10 +168,11 @@ class ScanActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun stopBluetoothScan(scanner: BluetoothLeScanner) {
+        //Important: stop Bluetooth to save battery
         scanner.stopScan(getScanCallback())
         binding.iconStatusScan.setImageResource(R.drawable.baseline_play_circle_24)
         binding.progressBarScan.isIndeterminate = false
-        binding.titleScan.text = "Relancer un scan (10s) "
+        binding.titleScan.text = "Relancer un scan (12s) "
 
     }
 
@@ -189,10 +183,11 @@ class ScanActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private val itemClickListener = object : DeviceAdapter.OnItemClickListener {
         override fun onItemClick(device: BluetoothDevice) {
-            Toast.makeText(this@ScanActivity, "Connecting to : ${device.name}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ScanActivity, "Connecting to : ${device.name}, please wait.", Toast.LENGTH_SHORT).show()
             bluetoothConnectionToDevice(device)
         }
     }
+
     @SuppressLint("MissingPermission")
     private fun bluetoothConnectionToDevice(device: BluetoothDevice) {
         device.connectGatt(this, false, object : BluetoothGattCallback() {
@@ -200,6 +195,7 @@ class ScanActivity : AppCompatActivity() {
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     val intent = Intent(this@ScanActivity, DeviceDetailsActivity::class.java)
                     intent.putExtra("deviceName", device.name)
+                    intent.putExtra("deviceAddress", device.address)
                     startActivity(intent)
                 } else {
                     Toast.makeText(this@ScanActivity, "Connection failed !!", Toast.LENGTH_SHORT).show()
@@ -207,5 +203,8 @@ class ScanActivity : AppCompatActivity() {
             }
         })
     }
+
+
+
 
 }
