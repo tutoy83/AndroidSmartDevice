@@ -53,7 +53,6 @@ class DeviceDetailsActivity : AppCompatActivity() {
             }
         }
 
-
     }
 
     @SuppressLint("MissingPermission")
