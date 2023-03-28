@@ -159,15 +159,19 @@ class ScanActivity : AppCompatActivity() {
         }, 10000)
     }
 
+    @SuppressLint("MissingPermission")
     private fun getScanCallback(): ScanCallback {
         return object : ScanCallback() {
             override fun onScanResult(callbackType: Int, result: ScanResult) {
                 super.onScanResult(callbackType, result)
                 val device = result.device
-                (binding.recyclerScan.adapter as DeviceAdapter).addDevice(device)
+                if (!device.name.isNullOrEmpty()) {
+                    (binding.recyclerScan.adapter as DeviceAdapter).addDevice(device)
+                }
             }
         }
     }
+
 
     @SuppressLint("MissingPermission")
     private fun stopBluetoothScan(scanner: BluetoothLeScanner) {
@@ -197,7 +201,7 @@ class ScanActivity : AppCompatActivity() {
                     val intent = Intent(this@ScanActivity, DeviceDetailsActivity::class.java)
                     intent.putExtra("deviceName", device.name)
                     startActivity(intent)
-                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                } else {
                     Toast.makeText(this@ScanActivity, "Connection failed !!", Toast.LENGTH_SHORT).show()
                 }
             }
