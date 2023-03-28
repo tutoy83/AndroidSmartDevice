@@ -2,9 +2,7 @@ package fr.isen.mignottetheo.androidsmartdevice
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
+import android.bluetooth.*
 import android.bluetooth.le.*
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,13 +10,10 @@ import android.os.Bundle
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import java.util.*
 
@@ -187,11 +182,26 @@ class ScanActivity : AppCompatActivity() {
         requestPermissionLauncher.launch(getAllPermissions())
     }
 
-
+    @SuppressLint("MissingPermission")
     private val itemClickListener = object : DeviceAdapter.OnItemClickListener {
         override fun onItemClick(device: BluetoothDevice) {
-
+            Toast.makeText(this@ScanActivity, "Connecting to : ${device.name}", Toast.LENGTH_SHORT).show()
+            bluetoothConnectionToDevice(device)
         }
+    }
+    @SuppressLint("MissingPermission")
+    private fun bluetoothConnectionToDevice(device: BluetoothDevice) {
+        device.connectGatt(this, false, object : BluetoothGattCallback() {
+            override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    val intent = Intent(this@ScanActivity, DeviceDetailsActivity::class.java)
+                    intent.putExtra("deviceName", device.name)
+                    startActivity(intent)
+                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    Toast.makeText(this@ScanActivity, "Connection failed !!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
 }

@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.beginHome.setOnClickListener {
-            val intent = Intent(this, ScanActivity::class.java)
+            val intent = Intent(this, RatingActivity::class.java)
             startActivity(intent)
         }
 
