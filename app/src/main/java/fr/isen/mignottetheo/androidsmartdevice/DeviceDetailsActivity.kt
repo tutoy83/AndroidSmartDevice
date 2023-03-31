@@ -14,6 +14,7 @@ import java.util.*
 class DeviceDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDeviceDetailsBinding
     private var ledCharacteristic: BluetoothGattCharacteristic? = null
+    private var buttonCharacteristic: BluetoothGattCharacteristic? = null
     private lateinit var bluetoothGatt: BluetoothGatt
     private var led1Active = false
     private var led2Active = false
@@ -41,8 +42,13 @@ class DeviceDetailsActivity : AppCompatActivity() {
             led3Management()
         }
         binding.endDeviceButton.setOnClickListener {
+            // Stop listening, bluetooth deconnexion
+            bluetoothGatt.setCharacteristicNotification(ledCharacteristic, false)
+            bluetoothGatt.disconnect()
+            bluetoothGatt.close()
             val intent = Intent(this, RatingActivity::class.java)
             startActivity(intent)
+
         }
 
         binding.optionNotifDeviceDetails.setOnCheckedChangeListener { _, isChecked ->
@@ -79,6 +85,22 @@ class DeviceDetailsActivity : AppCompatActivity() {
 
                 //Register for onCharacteristicChanged callback
                 bluetoothGatt.setCharacteristicNotification(ledCharacteristic, true)
+
+
+
+                //nRF Connect shows: it is the same service UUID but different buttonCharacteristic UUID
+
+                buttonCharacteristic =
+                    service?.getCharacteristic(UUID.fromString("00001234-8E22-4541-9D4C-21EDAE82ED19"))
+                //Get the descriptor for characteristic and enable notifications
+                val descriptor2: BluetoothGattDescriptor? =
+                    buttonCharacteristic?.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"))
+                descriptor2?.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+                bluetoothGatt.writeDescriptor(descriptor2)
+
+                //Register onCharacteristicChanged callback
+                bluetoothGatt.setCharacteristicNotification(buttonCharacteristic, true)
+
             }
         }
 
@@ -104,24 +126,20 @@ class DeviceDetailsActivity : AppCompatActivity() {
         bluetoothGatt.readCharacteristic(ledCharacteristic)
 
 
-        // Call onCharacteristicChanged
+        // Call onCharacteristicChanged function
         val characteristic: BluetoothGattCharacteristic? = ledCharacteristic
         if (characteristic != null) {
             onCharacteristicChanged(bluetoothGatt, characteristic)
         }
     }
 
-
-
-     fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
+    fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
         runOnUiThread {
+            Log.d("COMPTEUR", "NOTIF RECUE")
+
             if (characteristic?.uuid == UUID.fromString("00001234-8E22-4541-9D4C-21EDAE82ED19")) {
-                val counterValue =
-                    characteristic?.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)
-                Log.d("DeviceDetailsActivity", "NOTIF RECUE / Compteur = $counterValue")
-
-                binding.counterValue.text = counterValue.toString()
-
+                val hexValue = characteristic?.getStringValue(0)
+                Log.d("COMPTEUR", "NOTIF RECUE / Hex value = $hexValue")
             }
         }
     }

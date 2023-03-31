@@ -75,6 +75,11 @@ class ScanActivity : AppCompatActivity() {
                 requestPermissionLauncher.launch(getAllPermissions())
             }
         }
+
+        binding.troubleshootButton.setOnClickListener {
+            Toast.makeText(this, "Tips STM32: cliquez sur RESET", Toast.LENGTH_SHORT).show()
+
+        }
     }
     private fun getAllPermissions(): Array<String> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
@@ -156,14 +161,16 @@ class ScanActivity : AppCompatActivity() {
         return object : ScanCallback() {
             override fun onScanResult(callbackType: Int, result: ScanResult) {
                 super.onScanResult(callbackType, result)
+                val rssi = result.rssi
                 val device = result.device
                 if (!device.name.isNullOrEmpty()) {
-                    //remove all devices without names that are polluting
-                    (binding.recyclerScan.adapter as DeviceAdapter).addDevice(device)
+                    // Add device with rssi value to adapter
+                    (binding.recyclerScan.adapter as DeviceAdapter).addDevice(device, rssi)
                 }
             }
         }
     }
+
 
 
     @SuppressLint("MissingPermission")

@@ -18,7 +18,7 @@ class DeviceAdapter(
     private val mLeDevices: ArrayList<BluetoothDevice>,
     private val itemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
-
+    private val mRssiValues = HashMap<String, Int>() // New member variable to store RSSI values
     // Inner interface for item click listener
     interface OnItemClickListener {
         fun onItemClick(device: BluetoothDevice)
@@ -52,15 +52,19 @@ class DeviceAdapter(
         val device = mLeDevices[position]
         holder.deviceName.text = device.name ?: "Unnamed Device"
         holder.deviceAddress.text = device.address
-        holder.signalValue.text = "-41"
+
+        // Set the RSSI value
+        val rssi = mRssiValues[device.address]
+        holder.signalValue.text = rssi?.toString() ?: "N/A"
     }
 
 
     override fun getItemCount() = mLeDevices.size
 
-    fun addDevice(device: BluetoothDevice) {
+    fun addDevice(device: BluetoothDevice, rssi: Int) {
         if (!mLeDevices.contains(device)) {
             mLeDevices.add(device)
+            mRssiValues[device.address] = rssi // Store the RSSI value
             notifyDataSetChanged()
         }
     }

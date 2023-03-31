@@ -7,6 +7,19 @@
     android:backgroundTint="@color/darkblue"
     tools:context=".ScanActivity">
 
+    <Button
+        android:id="@+id/troubleshootButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="#1E7DBF"
+        android:text="Troubleshoot"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ProgressBar
         android:id="@+id/progressBarScan"
         style="?android:attr/progressBarStyleHorizontal"
@@ -46,7 +59,9 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/troubleshootButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBarScan" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

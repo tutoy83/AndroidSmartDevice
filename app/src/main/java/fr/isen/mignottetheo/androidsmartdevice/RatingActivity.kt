@@ -1,5 +1,6 @@
 package fr.isen.mignottetheo.androidsmartdevice
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.RatingBar
@@ -25,5 +26,16 @@ class RatingActivity : AppCompatActivity() {
                 }
             }
         }
+
+    }
+
+    override fun onBackPressed() {
+
+        // Show toast message
+        Toast.makeText(this, "La connexion Bluetooth doit etre établie à nouveau", Toast.LENGTH_SHORT).show()
+        // Redirect to MainActivity
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+
     }
 }
