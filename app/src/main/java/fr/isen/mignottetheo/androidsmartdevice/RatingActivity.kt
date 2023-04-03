@@ -28,7 +28,6 @@ class RatingActivity : AppCompatActivity() {
         }
 
     }
-
     override fun onBackPressed() {
 
         // Show toast message
